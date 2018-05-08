@@ -62,8 +62,15 @@ for ovpn_file in args.filenames:
     host = slug = ""
     with ovpn_file as f:
         contents = f.read()
-        username, host = re.search(r'# OVPN_ACCESS_SERVER_PROFILE=(.*)', contents).group(1).split(
-            '@')
+
+	SERVER_PROFILE_DATA = re.search(r'# OVPN_ACCESS_SERVER_PROFILE=(.*)', contents) 
+
+	if SERVER_PROFILE_DATA:
+        	username, host = re.search(r'# OVPN_ACCESS_SERVER_PROFILE=(.*)', contents).group(1).split('@')
+	else:
+		username = raw_input('No username found in profile, enter any username here: ')
+		host,port = re.search(r'remote (.*)',contents).group(1).split(' ')
+
         ca = re.search(r'<ca>(.*)</ca>', contents, re.DOTALL).group(1).strip()
         cert = re.search(r'<cert>(.*)</cert>', contents, re.DOTALL).group(1).strip()
         key = re.search(r'<key>(.*)</key>', contents, re.DOTALL).group(1).strip()
